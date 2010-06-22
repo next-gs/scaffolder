@@ -18,6 +18,7 @@ class Scaffolder
         self.sequence(data,seq)
       when 'unresolved' then
         self.unresolved(data,nil)
+      else raise ArgumentError.new("Unknown sequence tag: #{type}")
       end
     end
   end

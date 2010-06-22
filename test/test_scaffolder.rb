@@ -67,6 +67,16 @@ class TestScaffolder < Test::Unit::TestCase
 
     context "parsing an incorrect scaffold file" do
 
+      should "throw an error for unknown tag in file" do
+        err = YAML.load(File.read(@order))
+        err << {'non_standard_tag' => []}
+        begin
+          Scaffolder.read(temporary_scaffold_file(err),@sequence)
+          flunk "Should throw an error"
+        rescue ArgumentError
+        end
+      end
+
       should "throw an error when start position is outside sequence" do
         err = YAML.load(File.read(@order))
         err.first['sequence'].update({'start' => -1})
