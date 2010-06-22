@@ -22,7 +22,7 @@ class Scaffolder
     end
   end
 
-  attr_accessor :type, :start, :end
+  attr_accessor :type, :start, :end, :name
 
   def initialize(type)
     @type = type
@@ -30,6 +30,7 @@ class Scaffolder
 
   def self.sequence(data,sequence)
     s = Scaffolder.new('sequence')
+    s.name = data['source']
 
     s.start = data['start'] || 1
     raise ArgumentError.new("Sequence start less than 0") if s.start < 0

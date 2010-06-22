@@ -39,6 +39,10 @@ class TestScaffolder < Test::Unit::TestCase
         assert_equal(@scaffolds.first.end, 23)
       end
 
+      should "show the correct sequence name" do
+        assert_equal(@scaffolds.first.name, 'sequence1')
+      end
+
       should "show the correct start position based on scaffold file" do
         assert_equal(@scaffolds[1].start, 5)
       end
