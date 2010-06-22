@@ -5,12 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "scaffolder"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Scaffolder for genome sequence data}
+    gem.description = %Q{Organise genome sequence data into scaffolds using YAML configuration files.}
     gem.email = "mail@michaelbarton.me.uk"
     gem.homepage = "http://github.com/michaelbarton/scaffolder"
     gem.authors = ["Michael Barton"]
+    gem.add_dependency "bio", ">= 0"
     gem.add_development_dependency "shoulda", ">= 0"
+    gem.add_development_dependency "redgreen", ">= 0"
     gem.add_development_dependency "yard", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
