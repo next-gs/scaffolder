@@ -17,7 +17,7 @@ class Scaffolder
         raise ArgumentError.new("Fasta sequence not found: #{r['sequence']['source']}") unless seq
         self.sequence(data,seq)
       when 'unresolved' then
-        self.unresolved(data,nil)
+        self.unresolved(data)
       else raise ArgumentError.new("Unknown sequence tag: #{type}")
       end
     end
@@ -43,10 +43,11 @@ class Scaffolder
     s
   end
 
-  def self.unresolved(data,sequence)
-    s = Scaffolder.new('unresolved')
-    s.start = 1
-    s.end = data['length']
+  def self.unresolved(data)
+    s          = Scaffolder.new('unresolved')
+    s.start    = 1
+    s.end      = data['length']
+    s.sequence = 'N' * data['length']
     s
   end
 

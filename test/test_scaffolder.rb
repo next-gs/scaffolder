@@ -67,6 +67,10 @@ class TestScaffolder < Test::Unit::TestCase
       should "show the correct end position for unresolved region" do
         assert_equal(@scaffolds.last.end, 10)
       end
+
+      should "show the correct sequence for an unresolved tag" do
+        assert_equal(@scaffolds.last.sequence, 'N'*10)
+      end
     end
 
     context "parsing an incorrect scaffold file" do
