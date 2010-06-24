@@ -23,7 +23,7 @@ class Scaffolder
     end
   end
 
-  attr_accessor :type, :start, :end, :name, :sequence
+  attr_accessor :type, :start, :end, :name, :sequence, :length
 
   def initialize(type)
     @type = type
@@ -40,6 +40,7 @@ class Scaffolder
     s.end = data['end'] || sequence.length
     raise ArgumentError.new("Sequence end greater than length") if s.end > sequence.length
 
+    s.length = (s.end - s.start) + 1
     s
   end
 
@@ -48,6 +49,7 @@ class Scaffolder
     s.start    = 1
     s.end      = data['length']
     s.sequence = 'N' * data['length']
+    s.length   = data['length']
     s
   end
 

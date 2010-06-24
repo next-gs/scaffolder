@@ -43,6 +43,10 @@ class TestScaffolder < Test::Unit::TestCase
         assert_equal(@scaffolds.first.name, 'sequence1')
       end
 
+      should "show the correct sequence length based on sequence" do
+        assert_equal(@scaffolds.first.length, 23)
+      end
+
       should "show the correct sequence for a sequence tag" do
         assert_equal(@scaffolds.first.sequence, 'ATGCCAGATAACTGACTAGCATG')
       end
@@ -53,6 +57,10 @@ class TestScaffolder < Test::Unit::TestCase
 
       should "show the correct end position based on scaffold file" do
         assert_equal(@scaffolds[1].end, 25)
+      end
+
+      should "show the correct sequence length based on scaffold file" do
+        assert_equal(@scaffolds[1].length, 21)
       end
 
       should "show the correct region type" do
@@ -70,6 +78,10 @@ class TestScaffolder < Test::Unit::TestCase
 
       should "show the correct sequence for an unresolved tag" do
         assert_equal(@scaffolds.last.sequence, 'N'*10)
+      end
+
+      should "show the correct sequence length for unresolved tag" do
+        assert_equal(@scaffolds.last.length, 10)
       end
     end
 
