@@ -63,6 +63,10 @@ class TestScaffolder < Test::Unit::TestCase
         assert_equal(@scaffolds[1].length, 21)
       end
 
+      should "show the correct sequence based on scaffold file" do
+        assert_equal(@scaffolds[1].sequence, 'CTGACTAGCTGAAGGATTCCA')
+      end
+
       should "show the correct region type" do
         assert_equal(@scaffolds.first.type, 'sequence')
         assert_equal(@scaffolds.last.type, 'unresolved')

@@ -32,13 +32,14 @@ class Scaffolder
   def self.sequence(data,sequence)
     s          = Scaffolder.new('sequence')
     s.name     = data['source']
-    s.sequence = sequence.seq
 
     s.start = data['start'] || 1
     raise ArgumentError.new("Sequence start less than 0") if s.start < 0
 
     s.end = data['end'] || sequence.length
     raise ArgumentError.new("Sequence end greater than length") if s.end > sequence.length
+
+    s.sequence = sequence.seq[(s.start-1)..(s.end-1)]
 
     s.length = (s.end - s.start) + 1
     s
