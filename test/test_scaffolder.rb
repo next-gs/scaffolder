@@ -20,7 +20,7 @@ class TestScaffolder < Test::Unit::TestCase
 
       should "show the expected number of regions" do
         regions = Scaffolder.read(@order,@sequence)
-        assert(regions.length,2)
+        assert_equal(regions.length,3)
       end
 
     end
