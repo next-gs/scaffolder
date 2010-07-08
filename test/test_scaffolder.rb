@@ -6,20 +6,21 @@ class TestScaffolder < Test::Unit::TestCase
     setup do
       @order    = File.join(File.dirname(__FILE__),'data','scaffold_order.yml')
       @sequence = File.join(File.dirname(__FILE__),'data','sequences.fna')
+      @scaffold_hash = YAML.load(File.new(@order))
     end
 
     context "reading in a scaffolding file" do
 
       should "not throw an error" do
         begin
-          Scaffolder.read(@order,@sequence)
+          Scaffolder::Scaffold.new(@order,@sequence)
         rescue
           flunk "Error reading data file"
         end
       end
 
       should "show the expected number of regions" do
-        regions = Scaffolder.read(@order,@sequence)
+        regions = Scaffolder::Scaffold.new(@order,@sequence)
         assert_equal(regions.length,3)
       end
 
@@ -28,7 +29,7 @@ class TestScaffolder < Test::Unit::TestCase
     context "parsing a correct sequence object" do
 
       setup do
-        @scaffolds = Scaffolder.read(@order,@sequence)
+        @scaffolds = Scaffolder::Scaffold.new(@order,@sequence)
       end
 
       should "show the correct start position based on sequence" do
@@ -89,48 +90,24 @@ class TestScaffolder < Test::Unit::TestCase
       end
     end
 
-    context "parsing an incorrect scaffold file" do
+    context "parsing an unknown tag in the scaffold file" do
+      setup{ @scaffold_hash << {'non_standard_tag' => []} }
+      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    end
 
-      should "throw an error for unknown tag in file" do
-        err = YAML.load(File.read(@order))
-        err << {'non_standard_tag' => []}
-        begin
-          Scaffolder.read(temporary_scaffold_file(err),@sequence)
-          flunk "Should throw an error"
-        rescue ArgumentError
-        end
-      end
+    context "start position is outside sequence" do
+      setup{ @scaffold_hash.first['sequence'].update({'start' => 0}) }
+      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    end
 
-      should "throw an error when start position is outside sequence" do
-        err = YAML.load(File.read(@order))
-        err.first['sequence'].update({'start' => -1})
-        begin
-          Scaffolder.read(temporary_scaffold_file(err),@sequence)
-          flunk "Should throw an error"
-        rescue ArgumentError
-        end
-      end
+    context "end position is outside sequence" do
+      setup{ @scaffold_hash.first['sequence'].update({'end' => 35}) }
+      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    end
 
-      should "throw an error if file end position is outside sequence" do
-        err = YAML.load(File.read(@order))
-        err.first['sequence'].update({'end' => 35})
-        begin
-          Scaffolder.read(temporary_scaffold_file(err),@sequence)
-          flunk "Should throw an error"
-        rescue ArgumentError
-        end
-      end
-
-      should "throw an error if scaffold in file does not match sequence" do
-        err = YAML.load(File.read(@order))
-        err << {'sequence' => {'source' => 'sequence3'}}
-        begin
-          Scaffolder.read(temporary_scaffold_file(err),@sequence)
-          flunk "Should throw an error"
-        rescue ArgumentError
-        end
-      end
-
+    context "region in file does not match sequence" do
+      setup{ @scaffold_hash << {'sequence' => {'source' => 'sequence3'}} }
+      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
     end
 
   end
