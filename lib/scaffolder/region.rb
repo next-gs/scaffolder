@@ -17,6 +17,7 @@ module Scaffolder
 
       raise ArgumentError.new("Sequence end greater than length") if @end > sequence.length
       raise ArgumentError.new("Sequence start less than 0") if @start < 1
+      raise ArgumentError.new("Sequence start greater than end") if @start > @end
     end
 
   end

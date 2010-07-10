@@ -121,6 +121,20 @@ class TestScaffolder < Test::Unit::TestCase
       should_throw_argument_error{[ @assembly, @sequence ]}
     end
 
+    context "parsing an assembly where the start is greater than the end" do
+      setup do
+        @assembly = [
+          {"sequence"=>
+            { "start"  => 5,
+              "end"    => 4,
+              "source" => "sequence1"
+            }
+          }
+        ]
+      end
+      should_throw_argument_error{[ @assembly, @sequence ]}
+    end
+
     context "parsing an assembly where the end position is outside sequence" do
       setup do
         @assembly = [
