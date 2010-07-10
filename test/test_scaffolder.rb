@@ -45,6 +45,25 @@ class TestScaffolder < Test::Unit::TestCase
 
     end
 
+    context "parsing an assembly with a reversed region" do
+
+      setup do
+        @assembly = [
+          {"sequence" =>
+            { "source" => "sequence1",
+              "reverse" => true        }
+          }
+        ]
+      end
+
+      should_set_region(:start   ,  1)         {[ @assembly, @sequence ]}
+      should_set_region(:end     , 23)         {[ @assembly, @sequence ]}
+      should_set_region(:length  , 23)         {[ @assembly, @sequence ]}
+      should_set_region(:name    , 'sequence1'){[ @assembly, @sequence ]}
+      should_set_region(:sequence, 'TACGGTCTATTGACTGATCGTAC'){[ @assembly, @sequence ]}
+
+    end
+
     context "parsing an assembly with specified sequence start and end" do
 
       setup do

@@ -27,9 +27,10 @@ module Scaffolder
 
     def self.sequence(data,sequence)
       Scaffolder::Region.new('sequence',sequence,{
-        :name  => data['source'],
-        :start => data['start'],
-        :end   => data['end'],
+        :name    => data['source'],
+        :start   => data['start'],
+        :end     => data['end'],
+        :reverse => data['reverse']
       })
     end
 
