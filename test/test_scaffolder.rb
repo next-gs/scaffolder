@@ -4,110 +4,120 @@ class TestScaffolder < Test::Unit::TestCase
   context Scaffolder do
 
     setup do
-      @order    = File.join(File.dirname(__FILE__),'data','scaffold_order.yml')
       @sequence = File.join(File.dirname(__FILE__),'data','sequences.fna')
-      @scaffold_hash = YAML.load(File.new(@order))
     end
 
     context "reading in a scaffolding file" do
 
+      setup do
+        @assembly = [
+          {"sequence" =>
+            { "source" => "sequence1" }
+          }
+        ]
+      end
+
       should "not throw an error" do
         begin
-          Scaffolder::Scaffold.new(@order,@sequence)
+          Scaffolder::Scaffold.new(temporary_scaffold_file(@assembly),@sequence)
         rescue
           flunk "Error reading data file"
         end
       end
 
-      should "show the expected number of regions" do
-        regions = Scaffolder::Scaffold.new(@order,@sequence)
-        assert_equal(regions.length,3)
-      end
-
     end
 
-    context "parsing a correct sequence object" do
+    context "parsing a simple single sequence assembly" do
 
       setup do
-        @scaffolds = Scaffolder::Scaffold.new(@order,@sequence)
+        @assembly = [
+          {"sequence" =>
+            { "source" => "sequence1" }
+          }
+        ]
       end
 
-      should "show the correct start position based on sequence" do
-        assert_equal(@scaffolds.first.start, 1)
-      end
+      should_set_region(:start   ,  1)         {[ @assembly, @sequence ]}
+      should_set_region(:end     , 23)         {[ @assembly, @sequence ]}
+      should_set_region(:length  , 23)         {[ @assembly, @sequence ]}
+      should_set_region(:name    , 'sequence1'){[ @assembly, @sequence ]}
+      should_set_region(:sequence, 'ATGCCAGATAACTGACTAGCATG'){[ @assembly, @sequence ]}
 
-      should "show the correct end position based on sequence" do
-        assert_equal(@scaffolds.first.end, 23)
-      end
-
-      should "show the correct sequence name" do
-        assert_equal(@scaffolds.first.name, 'sequence1')
-      end
-
-      should "show the correct sequence length based on sequence" do
-        assert_equal(@scaffolds.first.length, 23)
-      end
-
-      should "show the correct sequence for a sequence tag" do
-        assert_equal(@scaffolds.first.sequence, 'ATGCCAGATAACTGACTAGCATG')
-      end
-
-      should "show the correct start position based on scaffold file" do
-        assert_equal(@scaffolds[1].start, 5)
-      end
-
-      should "show the correct end position based on scaffold file" do
-        assert_equal(@scaffolds[1].end, 25)
-      end
-
-      should "show the correct sequence length based on scaffold file" do
-        assert_equal(@scaffolds[1].length, 21)
-      end
-
-      should "show the correct sequence based on scaffold file" do
-        assert_equal(@scaffolds[1].sequence, 'CTGACTAGCTGAAGGATTCCA')
-      end
-
-      should "show the correct region type" do
-        assert_equal(@scaffolds.first.type, 'sequence')
-        assert_equal(@scaffolds.last.type, 'unresolved')
-      end
-
-      should "show the correct start position for unresolved region" do
-        assert_equal(@scaffolds.last.start, 1)
-      end
-
-      should "show the correct end position for unresolved region" do
-        assert_equal(@scaffolds.last.end, 10)
-      end
-
-      should "show the correct sequence for an unresolved tag" do
-        assert_equal(@scaffolds.last.sequence, 'N'*10)
-      end
-
-      should "show the correct sequence length for unresolved tag" do
-        assert_equal(@scaffolds.last.length, 10)
-      end
     end
 
-    context "parsing an unknown tag in the scaffold file" do
-      setup{ @scaffold_hash << {'non_standard_tag' => []} }
-      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    context "parsing an assembly with specified sequence start and end" do
+
+      setup do
+        @assembly = [
+          {"sequence"=>
+            { "end"    => 25,
+              "start"  => 5,
+              "source" => "sequence2"
+            }
+          }
+        ]
+      end
+
+      should_set_region(:start   ,  5)         {[ @assembly, @sequence ]}
+      should_set_region(:end     , 25)         {[ @assembly, @sequence ]}
+      should_set_region(:length  , 21)         {[ @assembly, @sequence ]}
+      should_set_region(:name    , 'sequence2'){[ @assembly, @sequence ]}
+      should_set_region(:type    , 'sequence'){[ @assembly, @sequence ]}
+      should_set_region(:sequence, 'CTGACTAGCTGAAGGATTCCA'){[ @assembly, @sequence ]}
     end
 
-    context "start position is outside sequence" do
-      setup{ @scaffold_hash.first['sequence'].update({'start' => 0}) }
-      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    context "parsing an assembly with an unresolved region" do
+
+      setup do
+        @assembly = [
+          {"unresolved" =>
+            { "length" => 10 }
+          }
+        ]
+      end
+
+      should_set_region(:start   ,  1)          {[ @assembly, @sequence ]}
+      should_set_region(:end     , 10)          {[ @assembly, @sequence ]}
+      should_set_region(:length  , 10)          {[ @assembly, @sequence ]}
+      should_set_region(:name    , 'unresolved'){[ @assembly, @sequence ]}
+      should_set_region(:type    , 'unresolved'){[ @assembly, @sequence ]}
+      should_set_region(:sequence, 'N'*10)      {[ @assembly, @sequence ]}
     end
 
-    context "end position is outside sequence" do
-      setup{ @scaffold_hash.first['sequence'].update({'end' => 35}) }
-      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    context "parsing an assembly with an unknown tag" do
+      setup{ @assembly = [{'non_standard_tag' => []}] }
+      should_throw_argument_error{[ @assembly, @sequence ]}
     end
 
-    context "region in file does not match sequence" do
-      setup{ @scaffold_hash << {'sequence' => {'source' => 'sequence3'}} }
-      should_throw_argument_error{[ @scaffold_hash, @sequence ]}
+    context "parsing an assembly where the start position is outside sequence" do
+      setup do
+        @assembly = [
+          {"sequence"=>
+            { "start"    => 0,
+              "source" => "sequence1"
+            }
+          }
+        ]
+      end
+      should_throw_argument_error{[ @assembly, @sequence ]}
+    end
+
+    context "parsing an assembly where the end position is outside sequence" do
+      setup do
+        @assembly = [
+          {"sequence"=>
+            { "end"    => 35,
+              "source" => "sequence1"
+            }
+          }
+        ]
+      end
+      should_throw_argument_error{[ @assembly, @sequence ]}
+    end
+
+    context "parsing an assmbly where a region does have a matching sequence" do
+      setup{ @assembly = [{'sequence' => {'source' => 'sequence3'}}] }
+      should_throw_argument_error{[ @assembly, @sequence ]}
     end
 
   end

@@ -34,7 +34,9 @@ module Scaffolder
     end
 
     def self.unresolved(data)
-      Scaffolder::Region.new('unresolved', 'N'*data['length'],{})
+      Scaffolder::Region.new('unresolved', 'N'*data['length'],
+        :name =>'unresolved'
+      )
     end
 
   end

@@ -23,10 +23,19 @@ class Test::Unit::TestCase
       scaffold_map, sequence_file = instance_eval(&block)
       tmp_map_file = temporary_scaffold_file(scaffold_map)
       begin
-        Scaffolder::Scaffold.new(tmp_map_file,@sequence)
+        Scaffolder::Scaffold.new(tmp_map_file,sequence_file)
         flunk "Should throw an error"
       rescue ArgumentError
       end
+    end
+  end
+
+  def self.should_set_region(attr,expected,&block)
+    should "set region #{attr} correctly" do
+      scaffold_map, sequence_file = instance_eval(&block)
+      @assembly = Scaffolder::Scaffold.new(
+        temporary_scaffold_file(scaffold_map),sequence_file)
+      assert_equal(expected,@assembly.first.send(attr))
     end
   end
 
