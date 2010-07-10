@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{scaffolder}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Barton"]
-  s.date = %q{2010-07-08}
+  s.date = %q{2010-07-10}
   s.description = %q{Organise genome sequence data into scaffolds using YAML configuration files.}
   s.email = %q{mail@michaelbarton.me.uk}
   s.extra_rdoc_files = [
@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
      "lib/scaffolder/region.rb",
      "lib/scaffolder/scaffold.rb",
      "scaffolder.gemspec",
-     "test/data/scaffold_order.yml",
      "test/data/sequences.fna",
      "test/helper.rb",
      "test/test_scaffolder.rb"
