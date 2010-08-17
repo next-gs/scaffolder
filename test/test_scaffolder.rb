@@ -157,5 +157,90 @@ class TestScaffolder < Test::Unit::TestCase
       should_throw_argument_error{[ @assembly, @sequence ]}
     end
 
+    context "parsing an assembly with sequence inserts" do
+
+      setup do
+        @assembly = [
+          {"sequence" =>
+            { "source"  => "sequence2",
+              "inserts" => [
+                { "source" => "insert1",
+                  "start"  => 5,
+                  "end"    => 10
+                }
+            ]
+            }
+          }
+        ]
+      end
+
+      context "correctly specified with start and end" do
+        should_set_region(:start   ,  1)         {[ @assembly, @sequence ]}
+        should_set_region(:end     , 31)         {[ @assembly, @sequence ]}
+        should_set_region(:length  , 31)         {[ @assembly, @sequence ]}
+        should_set_region(:name    , 'sequence2'){[ @assembly, @sequence ]}
+        should_set_region(:type    , 'sequence'){[ @assembly, @sequence ]}
+        should_set_region(:sequence, 'AATGGGTAGTAAGCTGAAGGATTCCATATAC'){[@assembly,@sequence]}
+      end
+
+      context "correctly specified with start and end with reverse sequence" do
+        setup do
+          @assembly.first['sequence']['reverse'] = true
+        end
+
+        should_set_region(:start   ,  1)         {[ @assembly, @sequence ]}
+        should_set_region(:end     , 31)         {[ @assembly, @sequence ]}
+        should_set_region(:length  , 31)         {[ @assembly, @sequence ]}
+        should_set_region(:name    , 'sequence2'){[ @assembly, @sequence ]}
+        should_set_region(:type    , 'sequence'){[ @assembly, @sequence ]}
+        should_set_region(:sequence, 'TTACCCATCATTCGACTTCCTAAGGTATATG'){[ @assembly, @sequence ]}
+      end
+
+      context "where the insert does not have a matching sequence" do
+        setup do
+          @assembly.first['sequence']['inserts'].first['source'] = "missing"
+        end
+        should_throw_argument_error{[ @assembly, @sequence ]}
+      end
+
+      context "where the insert start is after the sequence end" do
+        setup do
+          @assembly.first['sequence']['inserts'].first['start'] = 40
+        end
+        should_throw_argument_error{[ @assembly, @sequence ]}
+      end
+
+      context "where the insert end is before the sequence start" do
+        setup do
+          @assembly.first['sequence']['inserts'].first['end'] = 0
+        end
+        should_throw_argument_error{[ @assembly, @sequence ]}
+      end
+
+      context "two correctly specified inserts with start and end" do
+        setup do
+          @assembly.first['sequence']['inserts'] = [
+          { "source" => "insert1",
+            "start"  => 5,
+            "end"    => 8
+          },
+          { "source" => "insert1",
+            "start"  => 15,
+            "end"    => 17
+          }]
+        end
+        should_set_region(:start   ,  1)         {[ @assembly, @sequence ]}
+        should_set_region(:end     , 37)         {[ @assembly, @sequence ]}
+        should_set_region(:length  , 37)         {[ @assembly, @sequence ]}
+        should_set_region(:name    , 'sequence2'){[ @assembly, @sequence ]}
+        should_set_region(:type    , 'sequence'){[ @assembly, @sequence ]}
+        should_set_region(:sequence, 'AATGGGTAGTACTAGCTGGTAGTAGGATTCCATATAC'){[@assembly,@sequence]}
+
+      end
+
+      context "correctly specified with start and end with subsequence" do; end
+
+    end
+
   end
 end

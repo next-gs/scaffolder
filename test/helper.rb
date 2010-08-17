@@ -7,6 +7,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'scaffolder'
 require 'scaffolder/scaffold'
+require 'scaffolder/insert'
 require 'scaffolder/region'
 
 class Test::Unit::TestCase

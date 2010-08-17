@@ -6,7 +6,7 @@ module Scaffolder
 
     def self.new(scaffold_file,sequence_file)
       sequences = Hash[ *Bio::FlatFile::auto(sequence_file).collect { |s|
-        [s.definition.split.first,s]
+        [s.definition.split.first,s.seq]
       }.flatten]
 
       d = YAML.load(File.read(scaffold_file)).map do |r|
@@ -14,31 +14,17 @@ module Scaffolder
 
         case type
         when 'sequence' then
-          seq = sequences[r['sequence']['source']]
-          raise ArgumentError.new("Fasta sequence not found: #{r['sequence']['source']}") unless seq
-          self.sequence(data,seq.seq)
+          Scaffolder::Sequence.new(data,sequences)
         when 'unresolved' then
-          self.unresolved(data)
+          Scaffolder::Region.new('unresolved', 'N'*data['length'],
+            :name =>'unresolved'
+          )
         else raise ArgumentError.new("Unknown sequence tag: #{type}")
         end
       end
       super(d)
     end
 
-    def self.sequence(data,sequence)
-      Scaffolder::Region.new('sequence',sequence,{
-        :name    => data['source'],
-        :start   => data['start'],
-        :end     => data['end'],
-        :reverse => data['reverse']
-      })
-    end
-
-    def self.unresolved(data)
-      Scaffolder::Region.new('unresolved', 'N'*data['length'],
-        :name =>'unresolved'
-      )
-    end
 
   end
 end
