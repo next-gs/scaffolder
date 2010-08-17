@@ -64,27 +64,6 @@ class TestScaffolder < Test::Unit::TestCase
 
     end
 
-    context "parsing an assembly with specified sequence start and end" do
-
-      setup do
-        @assembly = [
-          {"sequence"=>
-            { "end"    => 25,
-              "start"  => 5,
-              "source" => "sequence2"
-            }
-          }
-        ]
-      end
-
-      should_set_region(:start   ,  5)         {[ @assembly, @sequence ]}
-      should_set_region(:end     , 25)         {[ @assembly, @sequence ]}
-      should_set_region(:length  , 21)         {[ @assembly, @sequence ]}
-      should_set_region(:name    , 'sequence2'){[ @assembly, @sequence ]}
-      should_set_region(:type    , 'sequence'){[ @assembly, @sequence ]}
-      should_set_region(:sequence, 'CTGACTAGCTGAAGGATTCCA'){[ @assembly, @sequence ]}
-    end
-
     context "parsing an assembly with an unresolved region" do
 
       setup do
@@ -108,47 +87,72 @@ class TestScaffolder < Test::Unit::TestCase
       should_throw_argument_error{[ @assembly, @sequence ]}
     end
 
-    context "parsing an assembly where the start position is outside sequence" do
-      setup do
-        @assembly = [
-          {"sequence"=>
-            { "start"    => 0,
-              "source" => "sequence1"
+    context "parsing an assembly with sequence coordinates" do
+
+      context "correctly specified" do
+
+        setup do
+          @assembly = [
+            {"sequence"=>
+              { "end"    => 25,
+                "start"  => 5,
+                "source" => "sequence2"
+              }
             }
-          }
-        ]
+          ]
+        end
+
+        should_set_region(:start   ,  5)         {[ @assembly, @sequence ]}
+        should_set_region(:end     , 25)         {[ @assembly, @sequence ]}
+        should_set_region(:length  , 21)         {[ @assembly, @sequence ]}
+        should_set_region(:name    , 'sequence2'){[ @assembly, @sequence ]}
+        should_set_region(:type    , 'sequence'){[ @assembly, @sequence ]}
+        should_set_region(:sequence, 'CTGACTAGCTGAAGGATTCCA'){[ @assembly, @sequence ]}
       end
-      should_throw_argument_error{[ @assembly, @sequence ]}
+
+      context "where the start position is outside the sequence length" do
+        setup do
+          @assembly = [
+            {"sequence"=>
+              { "start"    => 0,
+                "source" => "sequence1"
+              }
+            }
+          ]
+        end
+        should_throw_argument_error{[ @assembly, @sequence ]}
+      end
+
+      context "where the start is greater than the end" do
+        setup do
+          @assembly = [
+            {"sequence"=>
+              { "start"  => 5,
+                "end"    => 4,
+                "source" => "sequence1"
+              }
+            }
+          ]
+        end
+        should_throw_argument_error{[ @assembly, @sequence ]}
+      end
+
+      context "where the end position is outside the sequence length" do
+        setup do
+          @assembly = [
+            {"sequence"=>
+              { "end"    => 35,
+                "source" => "sequence1"
+              }
+            }
+          ]
+        end
+        should_throw_argument_error{[ @assembly, @sequence ]}
+      end
+
     end
 
-    context "parsing an assembly where the start is greater than the end" do
-      setup do
-        @assembly = [
-          {"sequence"=>
-            { "start"  => 5,
-              "end"    => 4,
-              "source" => "sequence1"
-            }
-          }
-        ]
-      end
-      should_throw_argument_error{[ @assembly, @sequence ]}
-    end
-
-    context "parsing an assembly where the end position is outside sequence" do
-      setup do
-        @assembly = [
-          {"sequence"=>
-            { "end"    => 35,
-              "source" => "sequence1"
-            }
-          }
-        ]
-      end
-      should_throw_argument_error{[ @assembly, @sequence ]}
-    end
-
-    context "parsing an assmbly where a region does have a matching sequence" do
+    context "parsing an assembly where a region does have a matching sequence" do
       setup{ @assembly = [{'sequence' => {'source' => 'sequence3'}}] }
       should_throw_argument_error{[ @assembly, @sequence ]}
     end
