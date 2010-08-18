@@ -1,41 +1,47 @@
-module Scaffolder
-  class Sequence < Region
+class Scaffolder
+  class Sequence
 
-    def initialize(data,sequences)
-      id       = data['source']
-      sequence = sequences[id]
-      raise ArgumentError.new("Fasta sequence not found: #{id}") unless sequence
-      
-      length = sequence.length
+    attr_accessor :entry_type, :start, :end, :name
 
-      if data['inserts']
-        inserts = data['inserts'].map do |i|
-          insert   = sequences[i['source']]
-          raise ArgumentError.new("Sequence not found: #{id}") unless insert
-          Insert.new(:start => i['start'], :stop => i['end'], :sequence => insert)
-        end
+    def initialize(options)
+      @entry_type   = :sequence
+      @name         = options[:name]
+      @start        = options[:start] || 1
+      @end          = options[:end]   || options[:sequence].length
+      @raw_sequence = options[:sequence]
+      @reverse      = options[:reverse]
 
-        inserts.sort.reverse.each do |insert|
+      raise ArgumentError.new("Sequence end greater than length") if @end > @raw_sequence.length
+      raise ArgumentError.new("Sequence start less than 0") if @start < 1
+      raise ArgumentError.new("Sequence start greater than end") if @start > @end
 
-          if insert.start > sequence.length
-            raise ArgumentError.new("Insert start #{insert.start} greater than length")
-          end
-
-          if insert.stop < 1
-            raise ArgumentError.new("Insert end #{insert.stop} before sequence start")
-          end
-
-          sequence[insert.position] = insert.sequence
-        end
-      end
-
-      super('sequence',sequence,{
-        :name    => data['source'],
-        :start   => data['start'],
-        :end     => data['end'],
-        :reverse => data['reverse']
-      })
     end
 
+    def add_inserts(inserts)
+      inserts.sort.reverse.each do |insert|
+        if insert.start > @raw_sequence.length
+          raise ArgumentError.new("Insert start greater than length")
+        end
+        if insert.stop < 1
+          raise ArgumentError.new("Insert end less than 1")
+        end
+        if insert.stop <= insert.start
+          raise ArgumentError.new("Insert end less than start")
+        end
+
+        before_size = @raw_sequence.length
+        @raw_sequence[insert.position] = insert.sequence
+
+        # Update sequence end after adding inserts
+        diff = @raw_sequence.length - before_size
+        @end += diff
+      end
+    end
+
+    def sequence
+      seq = @raw_sequence[(@start-1)..(@end-1)]
+      seq = Bio::Sequence::NA.new(seq).reverse.complement if @reverse
+      seq.to_s.upcase
+    end
   end
 end

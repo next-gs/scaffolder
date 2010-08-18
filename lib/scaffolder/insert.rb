@@ -1,4 +1,4 @@
-module Scaffolder
+class Scaffolder
   class Insert
     include Comparable
 

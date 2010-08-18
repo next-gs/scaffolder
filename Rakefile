@@ -11,6 +11,7 @@ begin
     gem.homepage = "http://github.com/michaelbarton/scaffolder"
     gem.authors = ["Michael Barton"]
     gem.add_dependency "bio", ">= 0"
+    gem.add_development_dependency "rr", ">= 0.10.11"
     gem.add_development_dependency "shoulda", ">= 0"
     gem.add_development_dependency "redgreen", ">= 0"
     gem.add_development_dependency "yard", ">= 0"
