@@ -152,7 +152,7 @@ class TestScaffolder < Test::Unit::TestCase
 
     end
 
-    context "parsing an assembly where a region does have a matching sequence" do
+    context "parsing an assembly where a region doesn't have a matching sequence" do
       setup{ @assembly = [{'sequence' => {'source' => 'sequence3'}}] }
       should_throw_argument_error{[ @assembly, @sequence ]}
     end
