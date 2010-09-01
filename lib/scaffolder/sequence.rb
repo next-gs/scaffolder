@@ -10,6 +10,7 @@ class Scaffolder
       @end          = options[:end]   || options[:sequence].length
       @raw_sequence = options[:sequence]
       @reverse      = options[:reverse]
+      @inserts      = []
 
       raise ArgumentError.new("Sequence end greater than length") if @end > @raw_sequence.length
       raise ArgumentError.new("Sequence start less than 0") if @start < 1

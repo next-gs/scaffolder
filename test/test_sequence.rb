@@ -91,10 +91,14 @@ class TestScaffolder < Test::Unit::TestCase
         assert_equal(@sequence.end,24)
       end
 
-      should "have the insert as an attribute" do
+      should "return added insert as an attribute" do
         inserts = [Scaffolder::Insert.new @insert]
         @sequence.add_inserts(inserts)
         assert_equal(@sequence.inserts,inserts)
+      end
+
+      should "return empty array when no inserts and inserts method called" do
+        assert_equal(@sequence.inserts,[])
       end
 
       should "update the sequence when reversed" do
