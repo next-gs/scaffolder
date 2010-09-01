@@ -91,6 +91,12 @@ class TestScaffolder < Test::Unit::TestCase
         assert_equal(@sequence.end,24)
       end
 
+      should "have the insert as an attribute" do
+        inserts = [Scaffolder::Insert.new @insert]
+        @sequence.add_inserts(inserts)
+        assert_equal(@sequence.inserts,inserts)
+      end
+
       should "update the sequence when reversed" do
         @sequence = Scaffolder::Sequence.new @options.update(:reverse => true)
         @sequence.add_inserts([Scaffolder::Insert.new @insert])
