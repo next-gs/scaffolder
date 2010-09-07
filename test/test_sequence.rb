@@ -21,7 +21,7 @@ class TestScaffolder < Test::Unit::TestCase
 
       should "reverse sequence when passed the reverse option" do
         sequence = Scaffolder::Sequence.new @options.merge(:reverse => true)
-        assert_equal(sequence.sequence,'TACGGTCTATTGACTGATCGTAC')
+        assert_equal(sequence.sequence,'CATGCTAGTCAGTTATCTGGCAT')
       end
 
       should "create subsequence object when passed sequence coordinates" do
@@ -104,7 +104,7 @@ class TestScaffolder < Test::Unit::TestCase
       should "update the sequence when reversed" do
         @sequence = Scaffolder::Sequence.new @options.update(:reverse => true)
         @sequence.add_inserts([Scaffolder::Insert.new @insert])
-        assert_equal(@sequence.sequence,"TACGCCATCATTGACTGATCGTAC")
+        assert_equal(@sequence.sequence,"CATGCTAGTCAGTTACTACCGCAT")
       end
 
       should "update the sequence with two inserts" do

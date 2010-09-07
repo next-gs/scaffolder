@@ -42,7 +42,7 @@ class Scaffolder
 
     def sequence
       seq = @raw_sequence[(@start-1)..(@end-1)]
-      seq = Bio::Sequence::NA.new(seq).reverse.complement if @reverse
+      seq = Bio::Sequence::NA.new(seq).reverse_complement if @reverse
       seq.to_s.upcase
     end
   end
