@@ -17,11 +17,13 @@ class TestScaffolder < Test::Unit::TestCase
         assert_equal(sequence.end,23)
         assert_equal(sequence.name,'sequence1')
         assert_equal(sequence.sequence,'ATGCCAGATAACTGACTAGCATG')
+        assert_equal(sequence.raw_sequence,'ATGCCAGATAACTGACTAGCATG')
       end
 
       should "reverse sequence when passed the reverse option" do
         sequence = Scaffolder::Sequence.new @options.merge(:reverse => true)
         assert_equal(sequence.sequence,'CATGCTAGTCAGTTATCTGGCAT')
+        assert_equal(sequence.raw_sequence,'ATGCCAGATAACTGACTAGCATG')
       end
 
       should "create subsequence object when passed sequence coordinates" do
@@ -89,6 +91,7 @@ class TestScaffolder < Test::Unit::TestCase
         @sequence.add_inserts([Scaffolder::Insert.new @insert])
         assert_equal(@sequence.sequence,'ATGCGGTAGTAACTGACTAGCATG')
         assert_equal(@sequence.end,24)
+        assert_equal(@sequence.raw_sequence,'ATGCCAGATAACTGACTAGCATG')
       end
 
       should "return added insert as an attribute" do
@@ -105,6 +108,7 @@ class TestScaffolder < Test::Unit::TestCase
         @sequence = Scaffolder::Sequence.new @options.update(:reverse => true)
         @sequence.add_inserts([Scaffolder::Insert.new @insert])
         assert_equal(@sequence.sequence,"CATGCTAGTCAGTTACTACCGCAT")
+        assert_equal(@sequence.raw_sequence,'ATGCCAGATAACTGACTAGCATG')
       end
 
       should "update the sequence with two inserts" do
@@ -112,6 +116,7 @@ class TestScaffolder < Test::Unit::TestCase
           Scaffolder::Insert.new(@insert.update(:start => 12, :stop => 15))])
         assert_equal(@sequence.sequence,"ATGCGGTAGTAAGGTAGTACTAGCATG")
         assert_equal(@sequence.end,27)
+        assert_equal(@sequence.raw_sequence,'ATGCCAGATAACTGACTAGCATG')
       end
     end
 
