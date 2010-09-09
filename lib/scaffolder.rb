@@ -30,6 +30,7 @@ class Scaffolder < DelegateClass(Array)
             Scaffolder::Insert.new(
               :start    => insert['start'],
               :stop     => insert['stop'],
+              :reverse  => insert['reverse'],
               :sequence => fetch_sequence(insert['source'])
             )
           end)

@@ -39,12 +39,14 @@ class TestScaffolder < Test::Unit::TestCase
 
       setup do
         @assembly.first['sequence'].update({"inserts" => [{
-          "source" => "insert1", "start" => 5, "stop" => 10
+          "source" => "insert1", "start" => 5, "stop" => 10, "reverse" => true
         }]})
       end
 
       should "pass inserts to sequence object" do
-        params = {:start => 5, :stop => 10, :sequence => 'GGTAGTA'}
+        params = {:start => 5, :stop => 10,
+          :sequence => 'GGTAGTA', :reverse => true}
+
         insert = Scaffolder::Insert.new(params)
 
         mock.instance_of(Scaffolder::Sequence).add_inserts([insert])
