@@ -5,30 +5,34 @@ class TestInsert < Test::Unit::TestCase
 
     setup do
       @options = {
-        :start    => 1,
-        :stop     => 5,
-        :sequence => "ATGC"
+        :start    => 5,
+        :stop     => 10,
+        :sequence => "ATGCGGGC"
       }
     end
 
     should "correctly store the passed options" do
       i = Scaffolder::Insert.new @options
-      assert_equal(i.start, 1)
-      assert_equal(i.stop, 5)
-      assert_equal(i.sequence, "ATGC")
-      assert_equal(i.position, 0..4)
+      assert_equal(i.start, @options[:start])
+      assert_equal(i.stop, @options[:stop])
+      assert_equal(i.sequence, @options[:sequence])
+    end
+
+    should "correctly generate the position" do
+      i = Scaffolder::Insert.new @options
+      assert_equal(i.position, (@options[:start]-1)..(@options[:stop]-1))
     end
 
     should "estimate the sequence end position" do
       @options.delete(:stop)
       i = Scaffolder::Insert.new @options
-      assert_equal(i.stop, 4)
+      assert_equal(i.stop, @options[:start] + @options[:sequence].length - 1)
     end
 
     should "be comparable by end position" do
       a = Scaffolder::Insert.new @options
-      b = Scaffolder::Insert.new @options.merge(:stop => 6)
-      c = Scaffolder::Insert.new @options.merge(:stop => 7)
+      b = Scaffolder::Insert.new @options.merge(:stop => @options[:stop] + 1)
+      c = Scaffolder::Insert.new @options.merge(:stop => @options[:stop] + 2)
       assert_equal([c,a,b].sort, [a,b,c])
     end
 

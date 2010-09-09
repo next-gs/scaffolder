@@ -7,7 +7,7 @@ class Scaffolder
     def initialize(options)
       @sequence = options[:sequence]
       @start    = options[:start]
-      @stop     = options[:stop] || @start + @sequence.length - 1
+      @stop     = options[:stop] || (@start + @sequence.length - 1)
     end
 
     def position
