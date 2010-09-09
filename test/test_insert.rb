@@ -18,6 +18,12 @@ class TestInsert < Test::Unit::TestCase
       assert_equal(i.sequence, @options[:sequence])
     end
 
+    should "reverse the sequence when passed the reverse tag" do
+      i = Scaffolder::Insert.new @options.merge(:reverse => true)
+      rev = Bio::Sequence::NA.new(@options[:sequence]).reverse_complement
+      assert_equal(i.sequence, rev.upcase)
+    end
+
     should "correctly generate the position" do
       i = Scaffolder::Insert.new @options
       assert_equal(i.position, (@options[:start]-1)..(@options[:stop]-1))
