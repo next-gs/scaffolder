@@ -35,6 +35,20 @@ class TestInsert < Test::Unit::TestCase
       assert_equal(i.stop, @options[:start] + @options[:sequence].length - 1)
     end
 
+    should "estimate the sequence start position" do
+      @options.delete(:start)
+      i = Scaffolder::Insert.new @options
+      assert_equal(i.start, @options[:stop] - @options[:sequence].length - 1)
+    end
+
+    should "throw error when neither start or stop are provided" do
+      @options.delete(:start)
+      @options.delete(:stop)
+      assert_raise ArgumentError do
+        Scaffolder::Insert.new @options
+      end
+    end
+
     should "be comparable by end position" do
       a = Scaffolder::Insert.new @options
       b = Scaffolder::Insert.new @options.merge(:stop => @options[:stop] + 1)
