@@ -17,3 +17,35 @@ class Scaffolder < DelegateClass(Array)
   end
 
 end
+
+  #def fetch_sequence(name)
+    #sequence = @sequences[name]
+    #raise ArgumentError.new("Missing sequence: #{name}") unless sequence
+    #sequence
+  #end
+
+      #case type
+      #when 'unresolved'
+        #Scaffolder::Region.new(:unresolved,'N'*data['length'])
+      #when 'sequence'
+        #sequence = Scaffolder::Sequence.new(
+          #:name     => data['source'],
+          #:start    => data['start'],
+          #:end      => data['end'],
+          #:reverse  => data['reverse'],
+          #:sequence => fetch_sequence(data['source'])
+        #)
+        #if data['inserts']
+          #sequence.add_inserts(data['inserts'].map do |insert|
+            #Scaffolder::Insert.new(
+              #:start    => insert['start'],
+              #:stop     => insert['stop'],
+              #:reverse  => insert['reverse'],
+              #:sequence => fetch_sequence(insert['source'])
+            #)
+          #end)
+        #end
+        #sequence
+      #else
+        #raise ArgumentError.new("Unknown tag: #{type}")
+      #end
