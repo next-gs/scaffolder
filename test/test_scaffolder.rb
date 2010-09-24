@@ -4,82 +4,100 @@ class TestScaffolder < Test::Unit::TestCase
   context Scaffolder do
     
     setup do
-      @sequence = File.join(File.dirname(__FILE__),'data','sequences.fna')
-        @assembly = [ {"sequence" => { "source" => "sequence1" } } ]
-        @expect = {:name => 'sequence1', :start => nil, :end => nil,
-          :sequence => 'ATGCCAGATAACTGACTAGCATG', :reverse => nil}
+      @sequence     = nil
+
+      @entry_type   = 'type'
+      @entry_data   = []
+      @entry        = {@entry_type => @entry_data}
+      #@sequence = File.join(File.dirname(__FILE__),'data','sequences.fna')
+        #@assembly = [ {"sequence" => { "source" => "sequence1" } } ]
+        #@expect = {:name => 'sequence1', :start => nil, :end => nil,
+          #:sequence => 'ATGCCAGATAACTGACTAGCATG', :reverse => nil}
     end
 
-    context "when parsing a sequence tag" do
+    should "instantiate region class entry and pass parameters" do
+      seq_hash = {}
+      Bio::FlatFile.expects(:auto).with(@sequence).returns(seq_hash)
 
-      should "create sequence" do
-        mock(Scaffolder::Sequence).new(@expect)
-        Scaffolder.new @assembly, @sequence
-      end
+      entry_object = mock()
+      entry_class  = mock()
+      entry_class.expects(:new).with(@entry_data,seq_hash).returns(entry_object)
 
-      should "create sequence with coordinates" do
-        @assembly.first['sequence'].update('start' => 2, 'end' => 5)
-        mock(Scaffolder::Sequence).new(@expect.update({:start => 2, :end => 5 }))
-        Scaffolder.new @assembly, @sequence
-      end
+      Scaffolder::Region.expects(:'[]').with(@entry_type).returns(entry_class)
 
-      should "create sequence with reverse" do
-        @assembly.first['sequence'].update('reverse' => true)
-        mock(Scaffolder::Sequence).new(@expect.update({:reverse => true }))
-        Scaffolder.new @assembly, @sequence
-      end
-
-      should "throw an error when source doesn't have a matching sequence" do
-        @assembly.first['sequence'].update('source' => 'sequence3')
-        assert_raise(ArgumentError){ Scaffolder.new @assembly, @sequence }
-      end
+      assert_equal(Scaffolder.new([@entry],@sequence),[entry_object])
     end
 
-    context "parsing an assembly with sequence inserts" do
+    #context "when parsing a sequence tag" do
 
-      setup do
-        @assembly.first['sequence'].update({"inserts" => [{
-          "source" => "insert1", "start" => 5, "stop" => 10, "reverse" => true
-        }]})
-      end
+      #should "create sequence" do
+        #mock(Scaffolder::Sequence).new(@expect)
+        #Scaffolder.new @assembly, @sequence
+      #end
 
-      should "pass inserts to sequence object" do
-        params = {:start => 5, :stop => 10,
-          :sequence => 'GGTAGTA', :reverse => true}
+      #should "create sequence with coordinates" do
+        #@assembly.first['sequence'].update('start' => 2, 'end' => 5)
+        #mock(Scaffolder::Sequence).new(@expect.update({:start => 2, :end => 5 }))
+        #Scaffolder.new @assembly, @sequence
+      #end
 
-        insert = Scaffolder::Insert.new(params)
+      #should "create sequence with reverse" do
+        #@assembly.first['sequence'].update('reverse' => true)
+        #mock(Scaffolder::Sequence).new(@expect.update({:reverse => true }))
+        #Scaffolder.new @assembly, @sequence
+      #end
 
-        mock.instance_of(Scaffolder::Sequence).add_inserts([insert])
-        mock(Scaffolder::Insert).new(params){insert}
+      #should "throw an error when source doesn't have a matching sequence" do
+        #@assembly.first['sequence'].update('source' => 'sequence3')
+        #assert_raise(ArgumentError){ Scaffolder.new @assembly, @sequence }
+      #end
+    #end
 
-        Scaffolder.new @assembly, @sequence
-      end
+    #context "parsing an assembly with sequence inserts" do
 
-      should "throw and error when insert does not have a matching sequence" do
-        @assembly.first['sequence']['inserts'].first.update({
-          "source" => "missing"})
-        assert_raise(ArgumentError){ Scaffolder.new @assembly, @sequence }
-      end
+      #setup do
+        #@assembly.first['sequence'].update({"inserts" => [{
+          #"source" => "insert1", "start" => 5, "stop" => 10, "reverse" => true
+        #}]})
+      #end
 
-    end
+      #should "pass inserts to sequence object" do
+        #params = {:start => 5, :stop => 10,
+          #:sequence => 'GGTAGTA', :reverse => true}
 
-    context "when parsing an assembly with an unresolved region" do
+        #insert = Scaffolder::Insert.new(params)
 
-      setup{ @assembly = [ {"unresolved" => { "length" => 5 } } ] }
+        #mock.instance_of(Scaffolder::Sequence).add_inserts([insert])
+        #mock(Scaffolder::Insert).new(params){insert}
 
-      should 'create an unresolved region' do
-        mock(Scaffolder::Region).new(:unresolved,'N'*5)
-        Scaffolder.new @assembly, @sequence
-      end
+        #Scaffolder.new @assembly, @sequence
+      #end
 
-    end
+      #should "throw and error when insert does not have a matching sequence" do
+        #@assembly.first['sequence']['inserts'].first.update({
+          #"source" => "missing"})
+        #assert_raise(ArgumentError){ Scaffolder.new @assembly, @sequence }
+      #end
 
-    context "when parsing an unknown tag" do
-      setup{ @assembly = [{'non_standard_tag' => []}] }
-      should "throw an argument error" do
-        assert_raise(ArgumentError){ Scaffolder.new @assembly, @sequence }
-      end
-    end
+    #end
+
+    #context "when parsing an assembly with an unresolved region" do
+
+      #setup{ @assembly = [ {"unresolved" => { "length" => 5 } } ] }
+
+      #should 'create an unresolved region' do
+        #mock(Scaffolder::Region).new(:unresolved,'N'*5)
+        #Scaffolder.new @assembly, @sequence
+      #end
+
+    #end
+
+    #context "when parsing an unknown tag" do
+      #setup{ @assembly = [{'non_standard_tag' => []}] }
+      #should "throw an argument error" do
+        #assert_raise(ArgumentError){ Scaffolder.new @assembly, @sequence }
+      #end
+    #end
 
   end
 end
