@@ -116,7 +116,6 @@ Overlapping inserts may cause unexpected behaviour
 
 Sequence reversed after inserts have been added.
 
-== Contributors
 
 Scaffolder was developed by Michael Barton. Patches and bug reports are welcome.
 
