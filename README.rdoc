@@ -1,6 +1,63 @@
 = scaffolder
 
-Description goes here.
+* Genome scaffolder
+* Provide an api to allow sequence contigs to be merged together.
+* Configured based on yaml files
+* Ideal for version control and replicability
+
+== Quick start
+
+Given a fasta file containing two sequences.
+
+  >seqA
+  GCGCGC
+  >seqB
+  ATATAT
+
+A simple genome scaffold containing the two sequences can be specified in yaml format. The keyword *sequence* means a sequence is used in the first part of the scaffold. The keyword *seqA* identifies that the sequence seqA from the fasta file is used.
+
+  ---
+    - sequence:
+        source: 'seqA'
+    - sequence:
+        source: 'seqB'
+
+The scaffolder API can then be used as follows to generate a scaffold sequence from the generated sequences.
+
+  scaffold = Scaffolder.new('scaffold.yml','sequences.fasta')
+  sequence = scaffold.inject(String.new) do |build,entry|
+    build << entry.sequence
+  end
+  puts sequence # Prints GCGCGCATATAT
+
+== Adding sequences regions
+
+The above example is simplifed to demonstrates basic usage. The following examples give more detail on specifying the genome scaffold.
+
+=== Specifing subsequences
+
+When generating a scaffolder only a subset of a sequence may be required. Inserting subsequences into the scaffold can be specified with the *start* and *stop* keywords. All of the sequence before the start coordinate is ignored and all of sequence after the stop coordinate is ignored, meaning only the sequence between the start and stop position inclusively is used in the scaffold.
+
+  ---
+    - sequence:
+        source: 'sequence1'
+        start: 42
+        stop: 1764
+
+=== Specifying the reverse complement
+
+  ---
+    - sequence:
+        source: 'sequence1'
+        reverse: true
+
+== Caveats
+
+Inserts processed are processed in reverse order according to end position. Last insert added up until first insert. Done to preserve insert coordinates.
+
+Overlapping inserts may cause unexpected behaviour
+
+Sequence reversed after inserts have been added.
 
 == Note on Patches/Pull Requests
  
@@ -11,15 +68,3 @@ Description goes here.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
-
-== Copyright
-
-Copyright (c) 2010 Michael Barton. See LICENSE for details.
-
-== Notes
-
-Inserts processed are processed in reverse order according to end position. Last insert added up until first insert. Done to preserve insert coordinates.
-
-Overlapping inserts may cause unexpected behaviour
-
-Sequence reversed after inserts have been added.
