@@ -12,5 +12,12 @@ class TestScaffolder < Test::Unit::TestCase
       unresolved.length length
       assert_equal(unresolved.sequence,'N' * 5)
     end
+
+    should "raise an error if length is unspecified" do
+      assert_raise(Scaffolder::Errors::CoordinateError) do 
+        Scaffolder::Region::Unresolved.new.sequence
+      end
+    end
+
   end
 end
