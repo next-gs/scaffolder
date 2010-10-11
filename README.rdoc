@@ -1,9 +1,20 @@
 = scaffolder
 
-* Genome scaffolder
-* Provide an api to allow sequence contigs to be merged together.
-* Configured based on yaml files
-* Ideal for version control and replicability
+== Synopsis
+
+A simple genome scaffolder API to allow sequence contigs to be merged together to build a draft sequence. The sequence used to construct the draft sequences is specified in human-readable yaml files.  Since the draft genome is specified by the scaffold yaml it is easy to remove or manipulate already sequences. In addition as the scaffold file is easy to edit and is ideal for version control and repeatibility.
+
+== Feature List
+
+* Specify a genome scaffold using human-readible and versionable plain text file.
+* Ruby API to output the scaffold sequences to file.
+* Simple and extensible API to add own custom scaffold regions (See Scaffolder::Region). 
+
+== Installing
+
+Ruby and Rubygems are required to use scaffolder. Scaffolder can be installed at the command line using:
+
+  $ gem install scaffolder
 
 == Quick start
 
@@ -30,11 +41,13 @@ The scaffolder API can then be used as follows to generate a scaffold sequence f
   end
   puts sequence # Prints GCGCGCATATAT
 
-== Adding sequences regions
+== The Scaffold File
 
-The above example is simplifed to demonstrates basic usage. The following examples give more detail on specifying the genome scaffold.
+=== Sequence Regions
 
-=== Specifing subsequences
+The above example is simplifed to demonstrates basic usage. The following examples give more detail on specifying the genome scaffold. Sequences are specified in the scaffold using the *sequence* keyword.
+
+==== Sub-Sequences
 
 When generating a scaffolder only a subset of a sequence may be required. Inserting subsequences into the scaffold can be specified with the *start* and *stop* keywords. All of the sequence before the start coordinate is ignored and all of sequence after the stop coordinate is ignored, meaning only the sequence between the start and stop position inclusively is used in the scaffold.
 
@@ -44,14 +57,58 @@ When generating a scaffolder only a subset of a sequence may be required. Insert
         start: 42
         stop: 1764
 
-=== Specifying the reverse complement
+==== Reverse Complemention
+
+The reverse keyword will specify that sequence is reversed complemented.
 
   ---
     - sequence:
         source: 'sequence1'
         reverse: true
 
-== Caveats
+=== Insert Regions
+
+Sequence contigs may contain gaps where the sequence could not be correctly resolved by the assembler. Additional sequencing may however produce sequences that can be used to fill these gaps. These inserts can be added to a sequence using the *insert* keyword and specifying a yaml array of the inserts. Multiple inserts can be specified.
+
+  ---
+    - sequence:
+        source: 'sequence1'
+        inserts:
+          -
+            source: "insert1"
+            open: 3
+            close: 10
+
+==== Insert Position
+
+The location where an insert is added to a sequence is defined by either the open, close parameters, or both. These define the location where the sequence is 'opened' and 'close' to add the insert. If only one parameter is used, for example the open positon, then the close position is determined from the length of the insert sequence and vice versa.
+
+==== Insert Sub-Sequence
+
+An insert can be subsequenced in the same way as a sequence using the *start* and *stop* keywords. Similarly the insert sequence can be reverse completed using the *reverse* keyword.
+
+  ---
+    - sequence:
+        source: 'sequence1'
+        inserts:
+          -
+            source: "insert1"
+            open: 3
+            close: 10
+            start: 8
+            stop: 16
+            reverse: 16
+
+
+=== Unresolved Regions
+
+Until a complete genome draft is generated there may be regions in the genome which are unknown. These can be specified in the scaffold config file using the *unresolved* keyword. Unresolved regions are filled with 'N' nucleotide characters equal to the value specified by the length character.
+
+  ---
+    - unresolved:
+        length: 10
+
+=== Scaffold File Processing Order
 
 Inserts processed are processed in reverse order according to end position. Last insert added up until first insert. Done to preserve insert coordinates.
 
@@ -59,12 +116,10 @@ Overlapping inserts may cause unexpected behaviour
 
 Sequence reversed after inserts have been added.
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+== Contributors
+
+Scaffolder was developed by Michael Barton. Patches and bug reports are welcome.
+
+== Copyright
+
+Scaffolder © 2010 by Michael Barton. YARD is licensed under the MIT license. Please see the LICENSE document for more information.
