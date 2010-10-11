@@ -2,17 +2,17 @@
 
 == Synopsis
 
-A simple genome scaffolder API to allow sequence contigs to be merged together to build a draft sequence. The sequence used to construct the draft sequences is specified in human-readable yaml files.  Since the draft genome is specified by the scaffold yaml it is easy to remove or manipulate already sequences. In addition as the scaffold file is easy to edit and is ideal for version control and repeatibility.
+A simple genome scaffolder API to allow sequence contigs to be merged together to build a draft sequence. The sequence used to construct the draft sequences is specified in human-readable yaml files.  Since the draft genome is specified by the scaffold yaml it is easy to remove or manipulate already sequences. In addition as the scaffold file is easy to edit and is ideal for version control and repeatability.
 
 == Feature List
 
-* Specify a genome scaffold using human-readible and versionable plain text file.
+* Specify a genome scaffold using human-readable and version-able plain text file.
 * Ruby API to output the scaffold sequences to file.
 * Simple and extensible API to add own custom scaffold regions (See Scaffolder::Region). 
 
 == Installing
 
-Ruby and Rubygems are required to use scaffolder. Scaffolder can be installed at the command line using:
+Ruby and RubyGems are required to use scaffolder. Scaffolder can be installed at the command line using:
 
   $ gem install scaffolder
 
@@ -45,11 +45,11 @@ The scaffolder API can then be used as follows to generate a scaffold sequence f
 
 === Sequence Regions
 
-The above example is simplifed to demonstrates basic usage. The following examples give more detail on specifying the genome scaffold. Sequences are specified in the scaffold using the *sequence* keyword.
+The above example is simplified to demonstrates basic usage. The following examples give more detail on specifying the genome scaffold. Sequences are specified in the scaffold using the *sequence* keyword.
 
 ==== Sub-Sequences
 
-When generating a scaffolder only a subset of a sequence may be required. Inserting subsequences into the scaffold can be specified with the *start* and *stop* keywords. All of the sequence before the start coordinate is ignored and all of sequence after the stop coordinate is ignored, meaning only the sequence between the start and stop position inclusively is used in the scaffold.
+When generating a scaffolder only a subset of a sequence may be required. Inserting sub-sequences into the scaffold can be specified with the *start* and *stop* keywords. All of the sequence before the start coordinate is ignored and all of sequence after the stop coordinate is ignored, meaning only the sequence between the start and stop position inclusively is used in the scaffold.
 
   ---
     - sequence:
@@ -57,7 +57,7 @@ When generating a scaffolder only a subset of a sequence may be required. Insert
         start: 42
         stop: 1764
 
-==== Reverse Complemention
+==== Reverse Complementation
 
 The reverse keyword will specify that sequence is reversed complemented.
 
@@ -81,7 +81,7 @@ Sequence contigs may contain gaps where the sequence could not be correctly reso
 
 ==== Insert Position
 
-The location where an insert is added to a sequence is defined by either the open, close parameters, or both. These define the location where the sequence is 'opened' and 'close' to add the insert. If only one parameter is used, for example the open positon, then the close position is determined from the length of the insert sequence and vice versa.
+The location where an insert is added to a sequence is defined by either the open, close parameters, or both. These define the location where the sequence is 'opened' and 'close' to add the insert. If only one parameter is used, for example the open position, then the close position is determined from the length of the insert sequence and vice versa.
 
 ==== Insert Sub-Sequence
 
@@ -102,7 +102,7 @@ An insert can be subsequenced in the same way as a sequence using the *start* an
 
 === Unresolved Regions
 
-Until a complete genome draft is generated there may be regions in the genome which are unknown. These can be specified in the scaffold config file using the *unresolved* keyword. Unresolved regions are filled with 'N' nucleotide characters equal to the value specified by the length character.
+Until a complete genome draft is generated there may be regions in the genome which are unknown. These can be specified in the scaffold   file using the *unresolved* keyword. Unresolved regions are filled with 'N' nucleotide characters equal to the value specified by the length character.
 
   ---
     - unresolved:
