@@ -12,7 +12,7 @@ class Scaffolder < DelegateClass(Array)
 
     super(assembly.map do |entry|
       type, data = entry.keys.first, entry.values.first
-      Scaffolder::Region[type].new(data,sequences)
+      Scaffolder::Region[type].generate(data)
     end)
   end
 
