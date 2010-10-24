@@ -1,18 +1,15 @@
-= scaffolder
-
 == Synopsis
 
-A simple genome scaffolder API to allow sequence contigs to be merged together to build a draft sequence. The sequence used to construct the draft sequences is specified in human-readable yaml files.  Since the draft genome is specified by the scaffold yaml it is easy to remove or manipulate already sequences. In addition as the scaffold file is easy to edit and is ideal for version control and repeatability.
+A simple genome scaffolder API for merging sequence contigs to build a continuous draft sequence. The draft sequence is constructed through specifying the order of contigs in in human-readable YAML files. Since the draft genome is specified by the scaffold YAML it is easy to remove or manipulate already sequences. In addition as the scaffold file is easy to edit and is ideal for version control and repeatability.
 
 == Feature List
 
-* Specify a genome scaffold using human-readable and version-able plain text file.
-* Ruby API to output the scaffold sequences to file.
-* Simple and extensible API to add own custom scaffold regions (See Scaffolder::Region). 
+* Construct a draft sequence scaffold using human-readable and versionable plain text files.
+* A simple and extensible Ruby API to manipulate the scaffold.
 
 == Installing
 
-Ruby and RubyGems are required to use scaffolder. Scaffolder can be installed at the command line using:
+Ruby and RubyGems are required to use scaffolder. Scaffolder is installed on the command line using:
 
   $ gem install scaffolder
 
@@ -25,7 +22,7 @@ Given a fasta file containing two sequences.
   >seqB
   ATATAT
 
-A simple genome scaffold containing the two sequences can be specified in yaml format. The keyword *sequence* means a sequence is used in the first part of the scaffold. The keyword *seqA* identifies that the sequence seqA from the fasta file is used.
+A simple genome scaffold containing the two sequences is specified as a YAML formatted text file shown below. Each dash (-) indicates a region in the scaffold. In the example below the keyword *sequence* inserts a sequence from the fasta file, the keyword *source* identifies that seqA should be used.
 
   ---
     - sequence:
@@ -33,7 +30,7 @@ A simple genome scaffold containing the two sequences can be specified in yaml f
     - sequence:
         source: 'seqB'
 
-The scaffolder API can then be used as follows to generate a scaffold sequence from the generated sequences.
+The scaffolder API can then be used as follows to generate a complete sequence.
 
   scaffold = Scaffolder.new('scaffold.yml','sequences.fasta')
   sequence = scaffold.inject(String.new) do |build,entry|
@@ -43,13 +40,15 @@ The scaffolder API can then be used as follows to generate a scaffold sequence f
 
 == The Scaffold File
 
+The above example is simplified to demonstrates basic usage. The sections below outline the types of regions that can be used in the scaffold file.
+
 === Sequence Regions
 
-The above example is simplified to demonstrates basic usage. The following examples give more detail on specifying the genome scaffold. Sequences are specified in the scaffold using the *sequence* keyword.
+Contigs sequences in the scaffold are specified using the *sequence* keyword. The *source* keyword should specifies the sequence to use from the fasta file and should match the first space delimited word in the fasta header.
 
 ==== Sub-Sequences
 
-When generating a scaffolder only a subset of a sequence may be required. Inserting sub-sequences into the scaffold can be specified with the *start* and *stop* keywords. All of the sequence before the start coordinate is ignored and all of sequence after the stop coordinate is ignored, meaning only the sequence between the start and stop position inclusively is used in the scaffold.
+When generating a scaffolder only a subset of a sequence may be required. Inserting sub-sequences into the scaffold is specified using the *start* and *stop* keywords. All of the sequence before the start coordinate is ignored and all of sequence after the stop coordinate is ignored, meaning only the sequence between the start and stop position inclusively is used in the scaffold.
 
   ---
     - sequence:
@@ -59,7 +58,7 @@ When generating a scaffolder only a subset of a sequence may be required. Insert
 
 ==== Reverse Complementation
 
-The reverse keyword will specify that sequence is reversed complemented.
+The *reverse* keyword specifies that the selected sequence is reversed complemented.
 
   ---
     - sequence:
@@ -68,20 +67,20 @@ The reverse keyword will specify that sequence is reversed complemented.
 
 === Insert Regions
 
-Sequence contigs may contain gaps where the sequence could not be correctly resolved by the assembler. Additional sequencing may however produce sequences that can be used to fill these gaps. These inserts can be added to a sequence using the *insert* keyword and specifying a yaml array of the inserts. Multiple inserts can be specified.
+Sequence contigs may contain gaps, for example where the sequence could not be correctly resolved during assembly. Additional sequencing may however produce sequences that can be used to fill these gaps. These inserts can be added to a sequence using the *insert* keyword and specifying a YAML array of the inserts. Multiple inserts can be specified, each separated by a dash (-) followed by a new line.
 
   ---
     - sequence:
         source: 'sequence1'
         inserts:
           -
-            source: "insert1"
+            source: 'insert1'
             open: 3
             close: 10
 
 ==== Insert Position
 
-The location where an insert is added to a sequence is defined by either the open, close parameters, or both. These define the location where the sequence is 'opened' and 'close' to add the insert. If only one parameter is used, for example the open position, then the close position is determined from the length of the insert sequence and vice versa.
+The location where an insert is added to a sequence is defined by either the *open*, *close* keywords, or both. This defines where the host sequence is 'opened' and 'closed' to add the insert. If only one parameter is used, for example using *open*, then the close position is determined from the length of the insert sequence and vice versa.
 
 ==== Insert Sub-Sequence
 
@@ -92,17 +91,17 @@ An insert can be subsequenced in the same way as a sequence using the *start* an
         source: 'sequence1'
         inserts:
           -
-            source: "insert1"
+            source: 'insert1'
             open: 3
             close: 10
             start: 8
             stop: 16
-            reverse: 16
+            reverse: true
 
 
 === Unresolved Regions
 
-Until a complete genome draft is generated there may be regions in the genome which are unknown. These can be specified in the scaffold   file using the *unresolved* keyword. Unresolved regions are filled with 'N' nucleotide characters equal to the value specified by the length character.
+There may be regions in between sequences in the genome which are unknown but which the approximate length is. These can be specified in the scaffold file using the *unresolved* keyword. Unresolved regions are filled with 'N' nucleotide characters equal to the value specified by the *length* keyword.
 
   ---
     - unresolved:
@@ -110,15 +109,24 @@ Until a complete genome draft is generated there may be regions in the genome wh
 
 === Scaffold File Processing Order
 
-Inserts processed are processed in reverse order according to end position. Last insert added up until first insert. Done to preserve insert coordinates.
+The scaffolder API processes the regions in YAML scaffold file as follows:
 
-Overlapping inserts may cause unexpected behaviour
+* Each region in the scaffold in processed in the order specified in the scaffolder file.
+* If the region is a sequence and inserts are specified, the inserts are sorted by stop position, then processed from last to first. Each insert is processed as follows:
+  * The insert is subsequenced if specified.
+  * The insert is reverse complemented if specified.
+  * The insert is added to each host sequence replacing the region of sequence specified by the open and close co-ordinates.
+  * The host sequence stop position is extended by the difference in length that the insert sequence fills. For example if a 5 base pair insert fills a 4 base region, the host sequence stop position is increased by the difference: 1.
+* The region is subsequenced if specified.
+* The region is reverse complemented if specified.
 
-Sequence reversed after inserts have been added.
+==== WARNING
+
+Inserts with overlapping *open* and *close* regions in the same sequence will cause unexpected behaviour and should be avoided.
 
 == Contributors
 
-Scaffolder was developed by Michael Barton. Patches and bug reports are welcome.
+Scaffolder was developed by Michael Barton. Pull requests, patches and bug reports are welcome.
 
 == Copyright
 
