@@ -152,6 +152,12 @@ class Scaffolder < DelegateClass(Array)
   require 'scaffolder/errors'
   require 'scaffolder/region'
 
+  # @param [Hash] assembly Produced from loading the scaffold file using YAML.load
+  # @param [String] sequence Location of the fasta file corresponding to the
+  #   scaffold sequences
+  # @return [Array] Returns an array of scaffold regions
+  # @example
+  #   Scaffolder.new(YAML.load('scaffold.yml'),'sequences.fasta')
   def initialize(assembly,sequence)
     sequences = Hash[ *Bio::FlatFile::auto(sequence).collect { |s|
       [s.definition.split.first,s.seq]
