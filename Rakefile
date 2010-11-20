@@ -48,6 +48,7 @@ task :default => :test
 
 begin
   require 'yard'
+  require File.join(File.dirname(__FILE__),'yard','attribute_handler.rb')
   YARD::Rake::YardocTask.new
 rescue LoadError
   task :yardoc do
