@@ -1,7 +1,5 @@
 require 'scaffolder'
 
-# Scaffolder::Region is the super class for processing the regions defined
-# in the scaffolder file
 class Scaffolder::Region
   include Scaffolder::Errors
 
@@ -17,14 +15,15 @@ class Scaffolder::Region
     # Links the specification of values in the scaffold file to the assignment
     # of instance variables.
     #
-    # @param [Symbol] attribute Define attributes for this type of scaffold region.
-    #   Attributes are read from the scaffold file and stored as instance variables.
+    # @param [Symbol] Define attributes for this type of scaffold
+    #   region. Attributes are read from the scaffold file and stored as
+    #   instance variables.
     # @param [Hash] options Attribute options.
     # @option options [Object,Proc] Default Specify a default value for this
     #   attribute if a value is not defined in the scaffold file.
     # @example Simple specification
     #   class MyRegion < Scaffolder::Region
-    #     attribute :value # "value" can be used as keyword in the scaffold file
+    #     attribute :value # "value" usable as a keyword in the scaffold file
     #   end
     # @example Specification with a default value
     #   attribute :value, :default => 1
@@ -70,9 +69,30 @@ class Scaffolder::Region
 
   end
 
+  # The raw sequence for this region.
+  #
+  # @param [String]
+  # @return [String]
   attribute :raw_sequence
-  attribute :start,       :default => 1
-  attribute :stop,        :default => lambda{|s| s.sequence_hook.length}
+
+  # Trim the start of sequence to this position. Default is 1.
+  #
+  # @param [Interger]
+  # @return [Interger]
+  attribute :start, :default => 1
+
+  # Trim the end of sequence to this position. Default is the sequence length..
+  #
+  # @param [Interger]
+  # @return [Interger]
+  attribute :stop, :default => lambda{|s| s.sequence_hook.length}
+
+
+  # Should the sequence be reverse complemented. Reverse complementation is
+  # performed after the start and end of the sequence has been trimmed.
+  #
+  # @param [Boolean]
+  # @return [Boolean]
   attribute :reverse
 
   # Override this to manipulate the sequence before it's subsequenced, reverse
@@ -84,13 +104,16 @@ class Scaffolder::Region
     raw_sequence
   end
 
-  # @return [Symbol] Returns the name of the class.
+  # The name of the class. Useful for selecting specific region types.
+  #
+  # @return [Symbol]
   def entry_type
     self.class.name.split('::').last.downcase.to_sym
   end
 
-  # Returns the value of the Scaffolder::Region#raw_sequence after subsequencing
-  # and reverse complementation (if specified in the scaffold file).
+  # Returns the value of the Scaffolder::Region#raw_sequence after
+  # subsequencing and reverse complementation (if specified in the
+  # scaffold file).
   #
   # @return [String] Sequence after all modifications
   # @raise [CoordinateError] if the start position is less than 1.
