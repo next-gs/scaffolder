@@ -33,6 +33,9 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
+require 'cucumber/rake/task'
+Cucumber::Rake::Task.new(:features)
+
 require 'yard'
 YARD::Rake::YardocTask.new
 
