@@ -1,16 +1,16 @@
 == Synopsis
 
-A simple genome scaffolder API for merging sequence contigs to build
-a continuous draft sequence. The draft sequence is constructed through
-specifying the order of contigs in in human-readable YAML files. Since the
-draft genome is specified by the scaffold YAML it is easy to remove or
-manipulate already sequences. In addition as the scaffold file is easy to edit
-and is ideal for version control and repeatability.
+A simple genome scaffolder API for merging sequence contigs to build a continuous
+draft sequence. The draft sequence is constructed through specifying the order of
+contigs in in human-readable YAML files. Since the draft genome is specified by the
+scaffold YAML it is easy to remove or manipulate already sequences. In addition as
+the scaffold file is easy to edit and is ideal for version control and
+repeatability.
 
 == Feature List
 
 * Construct a draft sequence scaffold using human-readable and versionable
-plain text files.
+  plain text files.
 * A simple and extensible Ruby API to traverse the scaffold.
 
 == Installing
@@ -19,6 +19,10 @@ Ruby and RubyGems are required to use scaffolder. Scaffolder is installed on
 the command line using:
 
   $ gem install scaffolder
+
+== Documentation
+
+See the Scaffolder class for getting started with Scaffolder.
 
 == Contact
 

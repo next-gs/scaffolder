@@ -143,7 +143,7 @@ require 'bio'
 #   * The region is subsequenced if specified.
 #   * The region is reverse complemented if specified.
 #
-# ==== WARNING
+# === WARNING
 #
 # Inserts with overlapping *open* and *close* regions in the same sequence will
 # cause unexpected behaviour and should be avoided.
