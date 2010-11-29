@@ -20,12 +20,29 @@ class Scaffolder::Region::Sequence < Scaffolder::Region
   # @return [String]
   attribute :source
 
-  # Array of inserts to add to this sequence. Default is an empty array.
+  # Array of inserts to add to this sequence. Each array entry may be either a
+  # Scaffolder::Region:Inserts or a corresponding to the attributes of an
+  # Insert. In the case of the latter each hash is used to generate a new
+  # Scaffolder::Region::Insert instance.
   #
-  # @return [Array]
-  # @param [Array]
-  # @see Scaffolder::Region::Insert
-  attribute :inserts, :default => Array.new
+  # @return [Array] Array of Scaffolder::Region::Insert
+  # @param [Array] inserts Accepts an array of either
+  #   Scaffolder::Region::Insert or a hash of insert keyword data.
+  def inserts(inserts=nil)
+    if inserts.nil?
+      @inserts || Array.new
+    else
+      @inserts = inserts.map do |insert|
+        if insert.instance_of? Insert
+          insert
+        else
+          Insert.generate(insert)
+        end
+      end
+    end
+  end
+
+#  attribute :inserts, :default => Array.new
 
   # Adds each of the sequence inserts to the raw sequence. Updates the sequence
   # length each time an insert is added to reflect the change.
