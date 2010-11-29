@@ -152,6 +152,17 @@ class Scaffolder < DelegateClass(Array)
   require 'scaffolder/errors'
   require 'scaffolder/region'
 
+  include Scaffolder::Errors
+
+  # Source is a reserved keyword. The 'source' keyword identifies the
+  # which corresponding fasta sequence should be retreived from the fasta
+  # file.
+  SOURCE = 'source'
+
+  # Raw_sequence is a reserved keyword. The 'raw_sequence' keyword points to
+  # the sequence from the fasta file identified by the 'source' keyword.
+  RAW_SEQUENCE = 'raw_sequence'
+
   # @param [Hash] assembly Produced from loading the scaffold file using YAML.load
   # @param [String] sequence Location of the fasta file corresponding to the
   #   scaffold sequences
@@ -166,11 +177,39 @@ class Scaffolder < DelegateClass(Array)
     super(assembly.map do |entry|
       type, data = entry.keys.first, entry.values.first
 
-      # Source is the only keyword. Used to fetch sequence from fasta file.
-      data['raw_sequence'] = sequences[data['source']] if data['source']
+      # Source is the only reserved keyword. Fetches sequence from fasta file.
+      data = Scaffolder.update_with_sequence(data,sequences)
 
       Scaffolder::Region[type].generate(data)
     end)
+  end
+
+  # Inserts corresponding fasta data into scaffold data hash. Every hash
+  # that contains the reserved 'source' keyword has the 'raw_sequence' keyword
+  # added for the corresponding fasta sequence from the fasta file.
+  # @param [Hash] data The scaffold hash
+  # @param [Hash] seqs A hash with identifier => sequence key/value pairs from 
+  #   the fasta sequence data.
+  # @return [Hash] The data hash updated with the 'raw_sequence' sequence
+  #   keyword data.
+  # @raise [UnkownSequenceError] if the source keyword is used but
+  #   there is no corresponding fasta sequence entry
+  def self.update_with_sequence(data,seqs)
+    if data.instance_of? Array
+      data.each{|a| update_with_sequence(a,seqs) }
+    else
+      if data[SOURCE]
+        sequence = seqs[data[SOURCE]]
+        if sequence.nil?
+          raise UnknownSequenceError.new("Unknown sequence: #{data[SOURCE]}")
+        end
+        data.merge!({RAW_SEQUENCE => sequence})
+      end
+      data.select{|k,v| v.respond_to? :each}.each do |key,hash|
+        update_with_sequence(hash,seqs)
+      end
+    end
+    data
   end
 
 end
