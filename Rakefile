@@ -18,11 +18,6 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Organise sequence contigs into genome scaffolds using simple human-readable YAML files.}
   gem.email = "mail@michaelbarton.me.uk"
   gem.authors = ["Michael Barton"]
-  gem.add_runtime_dependency "bio", ">= 0"
-  gem.add_development_dependency "mocha", "~> 0.9"
-  gem.add_development_dependency "shoulda", "~> 2.11"
-  gem.add_development_dependency "redgreen", "~> 1.2"
-  gem.add_development_dependency "yard", "~> 0.6"
 end
 Jeweler::RubygemsDotOrgTasks.new
 

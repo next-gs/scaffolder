@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Barton"]
-  s.date = %q{2010-11-24}
+  s.date = %q{2011-01-04}
   s.description = %q{Organise sequence contigs into genome scaffolds using simple human-readable YAML files.}
   s.email = %q{mail@michaelbarton.me.uk}
   s.extra_rdoc_files = [
@@ -18,10 +18,16 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    "Gemfile",
     "LICENSE",
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "cucumber.yml",
+    "features/insert.feature",
+    "features/sequence.feature",
+    "features/step_definitions/scaffolder_steps.rb",
+    "features/support/env.rb",
     "lib/scaffolder.rb",
     "lib/scaffolder/errors.rb",
     "lib/scaffolder/region.rb",
@@ -38,6 +44,7 @@ Gem::Specification.new do |s|
     "yard/attribute_handler.rb"
   ]
   s.homepage = %q{http://www.michaelbarton.me.uk/scaffolder/}
+  s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Genome scaffolding for human beings.}
@@ -55,24 +62,33 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<bio>, [">= 0"])
-      s.add_development_dependency(%q<mocha>, ["~> 0.8"])
-      s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<redgreen>, [">= 0"])
-      s.add_development_dependency(%q<yard>, [">= 0"])
+      s.add_runtime_dependency(%q<bio>, ["~> 1.4"])
+      s.add_development_dependency(%q<bundler>, ["~> 1.0"])
+      s.add_development_dependency(%q<shoulda>, ["~> 2.11"])
+      s.add_development_dependency(%q<mocha>, ["~> 0.9"])
+      s.add_development_dependency(%q<yard>, ["~> 0.6"])
+      s.add_development_dependency(%q<cucumber>, ["~> 0.9"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.5"])
+      s.add_development_dependency(%q<redgreen>, ["~> 1.2"])
     else
-      s.add_dependency(%q<bio>, [">= 0"])
-      s.add_dependency(%q<mocha>, ["~> 0.8"])
-      s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<redgreen>, [">= 0"])
-      s.add_dependency(%q<yard>, [">= 0"])
+      s.add_dependency(%q<bio>, ["~> 1.4"])
+      s.add_dependency(%q<bundler>, ["~> 1.0"])
+      s.add_dependency(%q<shoulda>, ["~> 2.11"])
+      s.add_dependency(%q<mocha>, ["~> 0.9"])
+      s.add_dependency(%q<yard>, ["~> 0.6"])
+      s.add_dependency(%q<cucumber>, ["~> 0.9"])
+      s.add_dependency(%q<jeweler>, ["~> 1.5"])
+      s.add_dependency(%q<redgreen>, ["~> 1.2"])
     end
   else
-    s.add_dependency(%q<bio>, [">= 0"])
-    s.add_dependency(%q<mocha>, ["~> 0.8"])
-    s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<redgreen>, [">= 0"])
-    s.add_dependency(%q<yard>, [">= 0"])
+    s.add_dependency(%q<bio>, ["~> 1.4"])
+    s.add_dependency(%q<bundler>, ["~> 1.0"])
+    s.add_dependency(%q<shoulda>, ["~> 2.11"])
+    s.add_dependency(%q<mocha>, ["~> 0.9"])
+    s.add_dependency(%q<yard>, ["~> 0.6"])
+    s.add_dependency(%q<cucumber>, ["~> 0.9"])
+    s.add_dependency(%q<jeweler>, ["~> 1.5"])
+    s.add_dependency(%q<redgreen>, ["~> 1.2"])
   end
 end
 
