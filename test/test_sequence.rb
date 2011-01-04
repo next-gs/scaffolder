@@ -4,14 +4,44 @@ class TestSequence < Test::Unit::TestCase
   context Scaffolder::Region::Sequence do
 
     context "attributes" do
-
       should_have_method_attribute Scaffolder::Region::Sequence
-
       should_have_attribute Scaffolder::Region::Sequence, :source, :inserts
+    end
 
-      should "return empty array as inserts attribute default" do
-        sequence = Scaffolder::Region::Sequence.new
-        assert_equal(sequence.inserts,Array.new)
+    context "insert attribute method" do
+
+      setup do
+        @sequence = Scaffolder::Region::Sequence.new
+        @hash = {'open' => 2, 'close' => 3}
+        @insert = Scaffolder::Region::Insert.new
+        @insert.open  @hash['open']
+        @insert.close @hash['close']
+      end
+
+      should "return empty array as default value" do
+        assert_equal(@sequence.inserts,Array.new)
+      end
+
+      should "allow array of inserts to be set as value" do
+        @sequence.inserts [@insert]
+        assert_equal(@sequence.inserts,[@insert])
+      end
+
+      should "process insert data hash into an array of inserts" do
+        @sequence.inserts [@hash]
+        insert = @sequence.inserts.first
+        assert_instance_of(Scaffolder::Region::Insert,insert)
+        assert_equal(@hash['close'],insert.close)
+        assert_equal(@hash['open'],insert.open)
+      end
+
+      should "process mixed insert data into an array of inserts" do
+        @sequence.inserts [@hash,@insert]
+        @sequence.inserts.each do |insert|
+          assert_instance_of(Scaffolder::Region::Insert,insert)
+          assert_equal(@hash['close'],insert.close)
+          assert_equal(@hash['open'],insert.open)
+        end
       end
 
     end
