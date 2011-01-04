@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
     "test/test_unresolved.rb",
     "yard/attribute_handler.rb"
   ]
-  s.homepage = %q{http://www.michaelbarton.me.uk/scaffolder/}
+  s.homepage = %q{http://www.michaelbarton.me.uk/projects/scaffolder/}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}

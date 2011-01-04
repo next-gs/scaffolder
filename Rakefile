@@ -12,7 +12,7 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "scaffolder"
-  gem.homepage = "http://www.michaelbarton.me.uk/scaffolder/"
+  gem.homepage = "http://www.michaelbarton.me.uk/projects/scaffolder/"
   gem.license = "MIT"
   gem.summary = %Q{Genome scaffolding for human beings.}
   gem.description = %Q{Organise sequence contigs into genome scaffolds using simple human-readable YAML files.}
