@@ -35,6 +35,31 @@ class TestInsert < Test::Unit::TestCase
 
     end
 
+    context "#size_diff" do
+
+      setup do
+        @insert = Scaffolder::Region::Insert.new
+        @insert.open  3
+        @insert.close 5
+      end
+
+      should "return a negative diff for a sequence smaller than insert site" do
+        @insert.raw_sequence 'TT'
+        assert(@insert.size_diff,-1)
+      end
+
+      should "return 0 for a sequence equal to the insert site" do
+        @insert.raw_sequence 'TT'
+        assert(@insert.size_diff,0)
+      end
+
+      should "return a positive diff for a sequence larger than insert site" do
+        @insert.raw_sequence 'TTTT'
+        assert(@insert.size_diff,1)
+      end
+
+    end
+
     should "be comparable by close position" do
       a = Scaffolder::Region::Insert.new
       a.close 1

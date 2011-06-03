@@ -67,10 +67,8 @@ class Scaffolder::Region::Sequence < Scaffolder::Region
       raise CoordinateError if insert.close < 1
       raise CoordinateError if insert.open  > insert.close
 
-      before_size = seq.length
       seq[insert.position] = insert.sequence
-      diff = seq.length - before_size
-      stop(stop + diff)
+      @stop += insert.size_diff
 
       seq
     end

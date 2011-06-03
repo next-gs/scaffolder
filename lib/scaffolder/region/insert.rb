@@ -40,12 +40,20 @@ class Scaffolder::Region::Insert < Scaffolder::Region
     open-1..close-1
   end
 
-  # Inserts are comaprable by close position.
+  # Inserts are comparable by close position.
   #
   # @return [Integer]
   # @param [Scaffolder::Region::Insert]
   def <=>(other)
     self.close <=> other.close
+  end
+
+  # The difference in the insert sequence size and the insert location
+  #
+  # @return [Integer]
+  def size_diff
+    insert_size = (close - open) + 1
+    sequence.length - insert_size
   end
 
 end
