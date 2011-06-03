@@ -140,8 +140,8 @@ require 'bio'
 #     that the insert sequence fills. For example if a 5 base pair insert fills
 #     a 4 base region, the host sequence stop position is increased by the
 #     difference: 1.
-#   * The region is subsequenced if specified.
-#   * The region is reverse complemented if specified.
+# * The region is subsequenced if specified.
+# * The region is reverse complemented if specified.
 #
 # === WARNING
 #

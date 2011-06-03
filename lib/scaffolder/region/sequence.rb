@@ -42,8 +42,6 @@ class Scaffolder::Region::Sequence < Scaffolder::Region
     end
   end
 
-#  attribute :inserts, :default => Array.new
-
   # Adds each of the sequence inserts to the raw sequence. Updates the sequence
   # length each time an insert is added to reflect the change.
   #
@@ -54,6 +52,12 @@ class Scaffolder::Region::Sequence < Scaffolder::Region
   # @raise [CoordinateError] if any insert open position is greater than the
   #   close position
   def sequence_hook
+    @updated_sequence ||= update_sequence_with_inserts
+  end
+
+  private
+
+  def update_sequence_with_inserts
     # Set the sequence stop positon if not defined as the stop
     # position is updated as each insert is added
     @stop ||= raw_sequence.length

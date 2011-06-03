@@ -83,6 +83,12 @@ class TestSequence < Test::Unit::TestCase
         assert_equal(@sequence.sequence,'ATGCGGTAGTAACTGACTAGCATG')
       end
 
+      should "update the sequence with a simple insert with repeated method calls" do
+        @sequence.inserts [@insert]
+        assert_equal(@sequence.sequence,'ATGCGGTAGTAACTGACTAGCATG')
+        assert_equal(@sequence.sequence,'ATGCGGTAGTAACTGACTAGCATG')
+      end
+
       should "update the sequence stop position after adding a simple insert" do
         @sequence.inserts [@insert]
         assert_equal(@sequence.stop,24)
