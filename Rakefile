@@ -18,6 +18,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Organise sequence contigs into genome scaffolds using simple human-readable YAML files.}
   gem.email = "mail@michaelbarton.me.uk"
   gem.authors = ["Michael Barton"]
+  gem.test_files = Dir['test/**/*.rb']
 end
 Jeweler::RubygemsDotOrgTasks.new
 
