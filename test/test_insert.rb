@@ -45,17 +45,17 @@ class TestInsert < Test::Unit::TestCase
 
       should "return a negative diff for a sequence smaller than insert site" do
         @insert.raw_sequence 'TT'
-        assert(@insert.size_diff,-1)
+        assert_equal(@insert.size_diff,-1)
       end
 
       should "return 0 for a sequence equal to the insert site" do
-        @insert.raw_sequence 'TT'
-        assert(@insert.size_diff,0)
+        @insert.raw_sequence 'TTT'
+        assert_equal(@insert.size_diff,0)
       end
 
       should "return a positive diff for a sequence larger than insert site" do
         @insert.raw_sequence 'TTTT'
-        assert(@insert.size_diff,1)
+        assert_equal(@insert.size_diff,1)
       end
 
     end
