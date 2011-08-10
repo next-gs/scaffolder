@@ -11,13 +11,14 @@ Gem::Specification.new do |s|
   s.authors = ["Michael Barton"]
   s.date = %q{2011-06-03}
   s.description = %q{Organise sequence contigs into genome scaffolds using simple human-readable YAML files.}
-  s.email = %q{mail@michaelbarton.me.uk}
+  s.email = %q{mail@next.gs}
   s.extra_rdoc_files = [
     "LICENSE",
     "README.rdoc"
   ]
   s.files = [
     ".document",
+    ".travis.yml",
     "Gemfile",
     "LICENSE",
     "README.rdoc",
@@ -43,7 +44,7 @@ Gem::Specification.new do |s|
     "test/test_unresolved.rb",
     "yard/attribute_handler.rb"
   ]
-  s.homepage = %q{http://www.michaelbarton.me.uk/projects/scaffolder/}
+  s.homepage = %q{http://next.gs}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
