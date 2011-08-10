@@ -11,7 +11,8 @@ class TestScaffolder < Test::Unit::TestCase
 
       should "create a single accessor attribute" do
         Scaffolder::Region.attribute @attr
-        assert(Scaffolder::Region.instance_methods.include? @attr.to_s)
+        methods = Scaffolder::Region.instance_methods.map{|m| m.to_s}
+        assert(methods.include?(@attr.to_s))
       end
 
       should "return nil until attribute value is stored" do
