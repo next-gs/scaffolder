@@ -8,6 +8,7 @@ rescue Bundler::BundlerError => e
 end
 
 require 'tempfile'
+require 'rspec/expectations'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 require 'scaffolder'
