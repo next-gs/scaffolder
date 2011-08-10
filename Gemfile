@@ -11,5 +11,5 @@ group :development do
   gem "yard", "~> 0.6"
   gem "cucumber", "~> 0.9"
   gem "jeweler", "~> 1.5"
-  gem "redgreen", "~> 1.2"
+  gem "mynyml-redgreen", "~> 0.7.1", :require => 'redgreen'
 end
