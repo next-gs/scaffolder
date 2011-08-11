@@ -22,7 +22,8 @@ the command line using:
 
 == Documentation
 
-See the Scaffolder class for getting started with Scaffolder.
+See the Scaffolder[http://rubydoc.info/gems/scaffolder/Scaffolder] class for
+getting started with Scaffolder.
 
 == Contact
 
