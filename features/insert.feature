@@ -3,13 +3,26 @@ Feature: The insert keyword
   A user can use the insert keyword
 
   Scenario: A scaffold with a single insert keyword
-    Given the scaffold file has the sequences:
-      | name | nucleotides |
-      | seq  | ATGCCGCGTAA |
-    And the first scaffold sequence has the inserts:
-      | name | nucleotides | open | close |
-      | ins  | AAAA        | 4    | 6     |
-    When creating a scaffolder object
+    Given a file named "sequence.fna" with:
+      """
+      >seq
+      TTTTTTTTT
+      >insert
+      AAA
+      """
+    Given a file named "scaffold.yml" with:
+      """
+      ---
+        -
+          sequence:
+            source: "seq"
+            inserts:
+            -
+              source: "insert"
+              open: 4
+              close: 6
+      """
+    When creating a scaffold with the files "scaffold.yml" and "sequence.fna"
     Then the scaffold should contain 1 sequence entries
     Then the scaffold should contain 1 insert entries
-    And the scaffold sequence should be ATGAAAACGTAA
+    And the scaffold sequence should be TTTAAATTT

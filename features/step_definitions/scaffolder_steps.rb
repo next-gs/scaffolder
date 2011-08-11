@@ -1,33 +1,7 @@
-Given /^the scaffold file has the sequences:$/ do |sequences|
-  @entries   ||= Array.new
-  @sequences ||= Array.new
-
-  sequences.hashes.each do |seq|
-    @entries << {'sequence' => {'source' => seq['name']}}
-  end
-  sequences.hashes.map do |seq|
-    @sequences << {:name => seq['name'], :sequence => seq['nucleotides']}
-  end
-end
-
-Given /^the first scaffold sequence has the inserts:$/ do |inserts|
-  sequence = @entries.detect{|s| s.keys.first == 'sequence' }
-  sequence['sequence']['inserts'] = (inserts.hashes.map do |insert|
-    i = {'source' => insert['name']}
-    i['open']  = insert['open'].to_i  if insert['open']
-    i['close'] = insert['close'].to_i if insert['close']
-    i
-  end)
-  inserts.hashes.map do |insert|
-    @sequences << {:name => insert['name'], :sequence => insert['nucleotides']}
-  end
-end
-
-When /^creating a scaffolder object$/ do
-  @scf_file = write_scaffold_file(@entries)
-  @seq_file = write_sequence_file(@sequences)
-
-  @scaffold = Scaffolder.new(YAML.load(File.read(@scf_file)),@seq_file)
+When /^creating a scaffold with the files "([^"]*)" and "([^"]*)"$/ do |x, y|
+  scf_file = File.join(TMP,x)
+  seq_file = File.join(TMP,y)
+  @scaffold = Scaffolder.new( YAML.load(File.read(scf_file)), seq_file)
 end
 
 Then /^the scaffold should contain (.*) sequence entries$/ do |n|
