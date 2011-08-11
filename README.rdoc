@@ -28,7 +28,7 @@ See the Scaffolder class for getting started with Scaffolder.
 
 Scaffolder was developed by Michael Barton (www.michaelbarton.me.uk). Pull
 requests, patches and bug reports are welcome. The source code is available on
-github[http://github.com/michaelbarton/scaffolder]. Bug reports and feature
+github[http://github.com/scaffolder/scaffolder]. Bug reports and feature
 requests may also be made there.
 
 == Copyright
